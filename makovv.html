@@ -4,13 +4,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
     </style>
-        
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подбор косметики</title>
     <style>
         *{
             font-family: "Fira Sans", serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         :root {
             --primary-color: #FF69B4; /* Розовый цвет */
@@ -21,45 +24,68 @@
         }
         body {
             font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: var(--background-color);
             color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 16px;
         }
-        .tabs {
+        .header {
+            width: 100%;
             display: flex;
-            justify-content: center;
-            gap: 16px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
-        .tab {
+        .menu-icon {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .menu-icon div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            margin: 4px;
+            border-radius: 3px;
+        }
+        .nav {
+            display: flex;
+            gap: 16px;
+        }
+        .nav a {
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 20px;
             background-color: var(--card-background);
             transition: background-color 0.3s;
-        }
-        .tab.active, .tab:hover {
-            background-color: var(--primary-color);
-        }
-        .tab.active {
+            text-decoration: none;
             color: var(--text-color);
+        }
+        .nav a.active, .nav a:hover {
+            background-color: var(--primary-color);
         }
         .filter {
             margin: 20px 0;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
-        .products, .cart-content {
+        .filter label, .filter select {
+            margin: 0 10px;
+        }
+        .products, .cart-content, .profile-content {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 16px;
-            padding: 16px;
+            width: 100%;
             display: none;
         }
-        .products.active, .cart-content.active {
+        .products.active, .cart-content.active, .profile-content.active {
             display: flex;
         }
         .product {
@@ -84,7 +110,7 @@
             height: auto;
             border-radius: 4px;
         }
-        .product button, .cart-item button, .clear-cart-button, .modal-add-to-cart {
+        .product button, .cart-item button, .clear-cart-button, .modal-add-to-cart, .order-button, .register-button, .login-button {
             background-color: var(--primary-color);
             color: var(--text-color);
             border: none;
@@ -93,7 +119,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .product button:hover, .cart-item button:hover, .clear-cart-button:hover, .modal-add-to-cart:hover {
+        .product button:hover, .cart-item button:hover, .clear-cart-button:hover, .modal-add-to-cart:hover, .order-button:hover, .register-button:hover, .login-button:hover {
             background-color: var(--secondary-color);
         }
         .cart {
@@ -112,6 +138,7 @@
             padding: 16px;
             width: 100%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             margin-bottom: 10px;
             opacity: 1;
@@ -125,10 +152,11 @@
             height: 80px;
             object-fit: cover;
             border-radius: 4px;
-            margin-right: 16px;
+            margin-bottom: 10px;
         }
         .cart-item-info {
             flex: 1;
+            text-align: center;
         }
         .cart-item-info h3 {
             margin: 0;
@@ -140,7 +168,7 @@
         }
         .cart-actions {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             gap: 10px;
         }
         .clear-cart-button {
@@ -195,6 +223,99 @@
             display: block;
             margin-top: 20px;
         }
+        .order-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .order-modal-content {
+            background-color: var(--card-background);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: modalFadeIn 0.5s forwards;
+        }
+        .login-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .login-modal-content {
+            background-color: var(--card-background);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: modalFadeIn 0.5s forwards;
+        }
+        .register-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .register-modal-content {
+            background-color: var(--card-background);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: modalFadeIn 0.5s forwards;
+        }
+        .order-header {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: var(--card-background);
+            margin-bottom: 10px;
+        }
+        .order-header:hover {
+            background-color: var(--secondary-color);
+        }
+        .order-details {
+            display: none;
+            padding: 10px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            background-color: var(--card-background);
+            margin-bottom: 10px;
+        }
+        .order-details.active {
+            display: block;
+        }
         @keyframes fadeIn {
             to {
                 opacity: 1;
@@ -213,18 +334,49 @@
                 transform: scale(1);
             }
         }
+        @media (max-width: 768px) {
+            .menu-icon {
+                display: flex;
+            }
+            .nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+            }
+            .nav.active {
+                display: flex;
+            }
+            .products, .cart-content, .profile-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .product, .cart {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1 style="color: var(--primary-color);">Подбор косметики по типу кожи</h1>
-
-    <div class="tabs">
-        <div class="tab active" onclick="showTab('products')">Продукты</div>
-        <div class="tab" onclick="showTab('cart')">Корзина</div>
+    <div class="header">
+        <h1 style="color: var(--primary-color);">Подбор косметики</h1>
+        <div class="menu-icon" onclick="toggleNav()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
 
-    <div class="filter">
+    <nav class="nav">
+        <a class="active" onclick="showTab('products')">Продукты</a>
+        <a onclick="showTab('cart')">Корзина</a>
+        <a id="loginTab" onclick="showLoginModal()">Войти</a>
+        <a id="registerTab" onclick="showRegisterModal()">Регистрация</a>
+        <a id="profileTab" onclick="showTab('profile')" style="display: none;">Профиль</a>
+        <a id="logoutTab" onclick="logout()" style="display: none;">Выйти</a>
+    </nav>
+
+    <div class="filter" id="filterSection">
         <label for="skin-type" style="color: var(--text-color);">Выберите тип кожи:</label>
         <select id="skin-type" onchange="filterProducts()" style="background-color: var(--card-background); color: var(--text-color); border: 1px solid var(--secondary-color); border-radius: 4px;">
             <option value="">Все</option>
@@ -236,38 +388,73 @@
     </div>
 
     <div class="products active">
-        <div class="product" data-skin-type="dry" data-price="1500" data-image="1.jpg" data-description="Увлажняющий крем для лица с розовым экстрактом." onclick="showModal(this)">
+        <div class="product" data-skin-type="dry" data-price="1500" data-image="1.jpg" data-description="Увлажняющий крем для лица с розовым экстрактом." data-ingredients="Вода, глицерин, розовый экстракт, витамин E." onclick="showModal(this)">
             <img src="1.jpg" alt="Розовая Нежность">
             <h2>Розовая Нежность</h2>
             <p>Цена: 1500 руб.</p>
             <button onclick="addToCart(event, this)">Добавить в корзину</button>
         </div>
 
-        <div class="product" data-skin-type="oily" data-price="2000" data-image="2.jpg" data-description="Гель для умывания с морскими минералами." onclick="showModal(this)">
+        <div class="product" data-skin-type="oily" data-price="2000" data-image="2.jpg" data-description="Гель для умывания с морскими минералами." data-ingredients="Вода, морские минералы, экстракт водорослей, гликолевая кислота." onclick="showModal(this)">
             <img src="2.jpg" alt="Сияние Моря">
             <h2>Сияние Моря</h2>
             <p>Цена: 2000 руб.</p>
             <button onclick="addToCart(event, this)">Добавить в корзину</button>
         </div>
 
-        <div class="product" data-skin-type="combination" data-price="1200" data-image="3.jpg" data-description="Скраб для лица с цитрусовыми маслами." onclick="showModal(this)">
+        <div class="product" data-skin-type="combination" data-price="1200" data-image="3.jpg" data-description="Скраб для лица с цитрусовыми маслами." data-ingredients="Сахар, цитрусовые масла, витамин C, глицерин." onclick="showModal(this)">
             <img src="3.jpg" alt="Цитрусовый Взрыв">
             <h2>Цитрусовый Взрыв</h2>
             <p>Цена: 1200 руб.</p>
             <button onclick="addToCart(event, this)">Добавить в корзину</button>
         </div>
 
-        <div class="product" data-skin-type="sensitive" data-price="1800" data-image="4.jpg" data-description="Увлажняющий бальзам с медом и шелком." onclick="showModal(this)">
+        <div class="product" data-skin-type="sensitive" data-price="1800" data-image="4.jpg" data-description="Увлажняющий бальзам с медом и шелком." data-ingredients="Мед, шелк, вода, глицерин, витамин E." onclick="showModal(this)">
             <img src="4.jpg" alt="Медовый Шелковый Бальзам">
             <h2>Медовый Шелковый Бальзам</h2>
             <p>Цена: 1800 руб.</p>
             <button onclick="addToCart(event, this)">Добавить в корзину</button>
         </div>
 
-        <div class="product" data-skin-type="dry" data-price="2200" data-image="5.jpg" data-description="Маска для лица с экстрактами цветов." onclick="showModal(this)">
+        <div class="product" data-skin-type="dry" data-price="2200" data-image="5.jpg" data-description="Маска для лица с экстрактами цветов." data-ingredients="Вода, экстракты цветов, глицерин, витамин C." onclick="showModal(this)">
             <img src="5.jpg" alt="Цветочная Гармония">
             <h2>Цветочная Гармония</h2>
             <p>Цена: 2200 руб.</p>
+            <button onclick="addToCart(event, this)">Добавить в корзину</button>
+        </div>
+
+        <div class="product" data-skin-type="dry" data-price="1700" data-image="7.jpg" data-description="Легкий дневной крем с гиалуроновой кислотой для увлажнения и защиты кожи." data-ingredients="Вода, гиалуроновая кислота, глицерин, витамин E." onclick="showModal(this)">
+            <img src="7.jpg" alt="Гидратирующий дневной крем">
+            <h2>Гидратирующий дневной крем</h2>
+            <p>Цена: 1700 руб.</p>
+            <button onclick="addToCart(event, this)">Добавить в корзину</button>
+        </div>
+
+        <div class="product" data-skin-type="combination" data-price="2100" data-image="8.jpg" data-description="Интенсивный ночной крем для восстановления и питания кожи." data-ingredients="Вода, ретинол, масло ши, витамин C, глицерин." onclick="showModal(this)">
+            <img src="8.jpg" alt="Ночной восстанавливающий крем">
+            <h2>Ночной восстанавливающий крем</h2>
+            <p>Цена: 2100 руб.</p>
+            <button onclick="addToCart(event, this)">Добавить в корзину</button>
+        </div>
+
+        <div class="product" data-skin-type="sensitive" data-price="1900" data-image="9.jpg" data-description="Увлажняющий крем с защитой от солнца SPF 30 для ежедневного использования." data-ingredients="Вода, оксид цинка, глицерин, витамин E, экстракт алоэ вера." onclick="showModal(this)">
+            <img src="9.jpg" alt="Увлажняющий крем с SPF">
+            <h2>Увлажняющий крем с SPF</h2>
+            <p>Цена: 1900 руб.</p>
+            <button onclick="addToCart(event, this)">Добавить в корзину</button>
+        </div>
+
+        <div class="product" data-skin-type="oily" data-price="2500" data-image="10.jpg" data-description="Концентрированная сыворотка с гиалуроновой кислотой для увлажнения и выравнивания тона кожи." data-ingredients="Вода, гиалуроновая кислота, витамин C, экстракт зеленого чая." onclick="showModal(this)">
+            <img src="10.jpg" alt="Сыворотка с гиалуроновой кислотой">
+            <h2>Сыворотка с гиалуроновой кислотой</h2>
+            <p>Цена: 2500 руб.</p>
+            <button onclick="addToCart(event, this)">Добавить в корзину</button>
+        </div>
+
+        <div class="product" data-skin-type="combination" data-price="1400" data-image="11.jpg" data-description="Очищающий тоник для удаления излишков кожного сала и улучшения текстуры кожи." data-ingredients="Вода, салициловая кислота, гамамелис, глицерин." onclick="showModal(this)">
+            <img src="11.jpg" alt="Очищающий тоник">
+            <h2>Очищающий тоник</h2>
+            <p>Цена: 1400 руб.</p>
             <button onclick="addToCart(event, this)">Добавить в корзину</button>
         </div>
     </div>
@@ -279,43 +466,111 @@
             <div class="cart-actions">
                 <p>Итого: <span id="total-price">0</span> руб.</p>
                 <button class="clear-cart-button" onclick="clearCart()">Очистить корзину</button>
+                <button class="order-button" onclick="showOrderModal()">Оформить заказ</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно -->
+    <div class="profile-content">
+        <div class="profile">
+            <h2>Профиль</h2>
+            <div id="purchase-history"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно продукта -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2 id="modalTitle"></h2>
             <img id="modalImage" style="max-width: 100%; height: auto; border-radius: 4px;" alt="Product">
             <p id="modalDescription"></p>
+            <p id="modalIngredients"></p>
             <p id="modalPrice"></p>
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" value="1" min="1">
             <button class="modal-add-to-cart" onclick="addToCartFromModal()">Добавить в корзину</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно заказа -->
+    <div id="orderModal" class="order-modal">
+        <div class="order-modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2>Оформление заказа</h2>
+            <p>Спасибо за ваш заказ! Ваши товары:</p>
+            <div id="order-items"></div>
+            <p>Итого: <span id="order-total-price">0</span> руб.</p>
+            <button class="order-button" onclick="placeOrder()">Подтвердить заказ</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Вход в программу</h2>
+            <label for="login-username">Имя пользователя:</label>
+            <input type="text" id="login-username" placeholder="Введите ваше имя">
+            <label for="login-password">Пароль:</label>
+            <input type="password" id="login-password" placeholder="Введите ваш пароль">
+            <button class="login-button" onclick="login()">Войти</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="register-modal">
+        <div class="register-modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Регистрация</h2>
+            <label for="register-username">Имя пользователя:</label>
+            <input type="text" id="register-username" placeholder="Введите ваше имя">
+            <label for="register-password">Пароль:</label>
+            <input type="password" id="register-password" placeholder="Введите ваш пароль">
+            <button class="register-button" onclick="register()">Зарегистрироваться</button>
         </div>
     </div>
 
     <script>
         let currentProduct = null;
+        let loggedInUser = null;
+
+        function toggleNav() {
+            const nav = document.querySelector('.nav');
+            nav.classList.toggle('active');
+        }
 
         function showTab(tabName) {
             const productsTab = document.querySelector('.products');
             const cartTab = document.querySelector('.cart-content');
-            const tabs = document.querySelectorAll('.tab');
+            const profileTab = document.querySelector('.profile-content');
+            const navLinks = document.querySelectorAll('.nav a');
+            const filterSection = document.getElementById('filterSection');
 
             if (tabName === 'products') {
                 productsTab.classList.add('active');
                 cartTab.classList.remove('active');
+                profileTab.classList.remove('active');
+                filterSection.style.display = 'flex';
             } else {
                 productsTab.classList.remove('active');
-                cartTab.classList.add('active');
+                cartTab.classList.remove('active');
+                profileTab.classList.remove('active');
+                filterSection.style.display = 'none';
+
+                if (tabName === 'cart') {
+                    cartTab.classList.add('active');
+                } else if (tabName === 'profile') {
+                    profileTab.classList.add('active');
+                    loadPurchaseHistory();
+                }
             }
 
-            tabs.forEach(tab => {
-                if (tab.innerText.toLowerCase() === tabName) {
-                    tab.classList.add('active');
+            navLinks.forEach(link => {
+                if (link.innerText.toLowerCase() === tabName) {
+                    link.classList.add('active');
                 } else {
-                    tab.classList.remove('active');
+                    link.classList.remove('active');
                 }
             });
         }
@@ -337,12 +592,17 @@
             if (event) {
                 event.stopPropagation(); // Предотвращает всплытие события
             }
+            if (!loggedInUser) {
+                alert('Пожалуйста, войдите или зарегистрируйтесь, чтобы добавить товар в корзину.');
+                return;
+            }
             const product = button.parentElement;
             const productName = product.querySelector('h2').innerText;
             const productPrice = product.getAttribute('data-price');
             const productImage = product.getAttribute('data-image');
+            const quantity = document.getElementById('quantity') ? document.getElementById('quantity').value : 1;
 
-            console.log(`Adding to cart: ${productName}, Price: ${productPrice}`);
+            console.log(`Adding to cart: ${productName}, Price: ${productPrice}, Quantity: ${quantity}`);
 
             const cartItems = document.getElementById('cart-items');
 
@@ -353,12 +613,13 @@
                 <div class="cart-item-info">
                     <h3>${productName}</h3>
                     <p>Цена: ${productPrice} руб.</p>
+                    <p>Количество: ${quantity}</p>
                 </div>
                 <button onclick="removeFromCart(this)">Удалить</button>
             `;
             cartItems.appendChild(cartItem);
 
-            updateTotalPrice(parseInt(productPrice));
+            updateTotalPrice(parseInt(productPrice) * parseInt(quantity));
         }
 
         function addToCartFromModal() {
@@ -370,15 +631,17 @@
 
         function removeFromCart(button) {
             const cartItem = button.parentElement;
-            const productPriceElement = cartItem.querySelector('p');
+            const productPriceElement = cartItem.querySelector('p:nth-child(2)');
+            const productQuantityElement = cartItem.querySelector('p:nth-child(3)');
             const productPrice = parseInt(productPriceElement.innerText.split(': ')[1]);
+            const productQuantity = parseInt(productQuantityElement.innerText.split(': ')[1]);
 
-            console.log(`Removing from cart: ${cartItem.querySelector('h3').innerText}, Price: ${productPrice}`);
+            console.log(`Removing from cart: ${cartItem.querySelector('h3').innerText}, Price: ${productPrice}, Quantity: ${productQuantity}`);
 
             cartItem.classList.add('fade-out');
             cartItem.addEventListener('animationend', () => {
                 cartItem.remove();
-                updateTotalPrice(-productPrice);
+                updateTotalPrice(-productPrice * productQuantity);
             });
         }
 
@@ -389,9 +652,11 @@
             let totalPriceReduction = 0;
 
             for (let item of items) {
-                const productPriceElement = item.querySelector('p');
+                const productPriceElement = item.querySelector('p:nth-child(2)');
+                const productQuantityElement = item.querySelector('p:nth-child(3)');
                 const productPrice = parseInt(productPriceElement.innerText.split(': ')[1]);
-                totalPriceReduction += productPrice;
+                const productQuantity = parseInt(productQuantityElement.innerText.split(': ')[1]);
+                totalPriceReduction += productPrice * productQuantity;
 
                 item.classList.add('fade-out');
                 item.addEventListener('animationend', () => {
@@ -407,6 +672,9 @@
             const currentTotal = parseInt(totalPriceElement.innerText);
             const newTotal = currentTotal + amount;
             totalPriceElement.innerText = newTotal;
+
+            const orderTotalPriceElement = document.getElementById('order-total-price');
+            orderTotalPriceElement.innerText = newTotal;
         }
 
         function showModal(product) {
@@ -416,11 +684,13 @@
             const modalTitle = document.getElementById('modalTitle');
             const modalImage = document.getElementById('modalImage');
             const modalDescription = document.getElementById('modalDescription');
+            const modalIngredients = document.getElementById('modalIngredients');
             const modalPrice = document.getElementById('modalPrice');
 
             modalTitle.innerText = product.querySelector('h2').innerText;
             modalImage.src = product.getAttribute('data-image');
             modalDescription.innerText = product.getAttribute('data-description');
+            modalIngredients.innerText = `Состав: ${product.getAttribute('data-ingredients')}`;
             modalPrice.innerText = `Цена: ${product.getAttribute('data-price')} руб.`;
 
             modalContent.style.opacity = 0;
@@ -441,6 +711,195 @@
             setTimeout(() => {
                 document.getElementById('productModal').style.display = 'none';
             }, 500);
+        }
+
+        function showOrderModal() {
+            const orderModal = document.getElementById('orderModal');
+            const orderModalContent = orderModal.querySelector('.order-modal-content');
+            const orderItems = document.getElementById('order-items');
+            const cartItems = document.getElementById('cart-items').getElementsByClassName('cart-item');
+
+            orderItems.innerHTML = '';
+            for (let item of cartItems) {
+                const productName = item.querySelector('h3').innerText;
+                const productPrice = item.querySelector('p:nth-child(2)').innerText;
+                const productQuantity = item.querySelector('p:nth-child(3)').innerText;
+                const productImage = item.querySelector('img').src;
+
+                const orderItem = document.createElement('div');
+                orderItem.innerHTML = `
+                    <img src="${productImage}" alt="${productName}" style="width: 50px; height: 50px; border-radius: 4px;">
+                    <h3>${productName}</h3>
+                    <p>${productPrice}</p>
+                    <p>${productQuantity}</p>
+                `;
+                orderItems.appendChild(orderItem);
+            }
+
+            orderModalContent.style.opacity = 0;
+            orderModalContent.style.transform = 'scale(0.5)';
+            orderModal.style.display = 'block';
+
+            setTimeout(() => {
+                orderModalContent.style.opacity = 1;
+                orderModalContent.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeOrderModal() {
+            const orderModalContent = document.getElementById('orderModal').querySelector('.order-modal-content');
+            orderModalContent.style.opacity = 0;
+            orderModalContent.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                document.getElementById('orderModal').style.display = 'none';
+            }, 500);
+        }
+
+        function placeOrder() {
+            const cartItems = document.getElementById('cart-items').getElementsByClassName('cart-item');
+            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            const order = {
+                date: new Date().toLocaleString(),
+                items: []
+            };
+
+            for (let item of cartItems) {
+                const productName = item.querySelector('h3').innerText;
+                const productPrice = item.querySelector('p:nth-child(2)').innerText;
+                const productQuantity = item.querySelector('p:nth-child(3)').innerText;
+                const productImage = item.querySelector('img').src;
+                order.items.push({ productName, productPrice, productQuantity, productImage });
+            }
+
+            purchaseHistory.push(order);
+            localStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+
+            alert('Заказ успешно оформлен!');
+            clearCart();
+            closeOrderModal();
+        }
+
+        function loadPurchaseHistory() {
+            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            const purchaseHistoryElement = document.getElementById('purchase-history');
+            purchaseHistoryElement.innerHTML = '';
+
+            purchaseHistory.forEach(order => {
+                const orderElement = document.createElement('div');
+                orderElement.innerHTML = `<div class="order-header" onclick="toggleOrderDetails(this)">Заказ от ${order.date}</div>`;
+                const itemsElement = document.createElement('div');
+                itemsElement.className = 'order-details';
+                order.items.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.innerHTML = `
+                        <img src="${item.productImage}" alt="${item.productName}" style="width: 50px; height: 50px; border-radius: 4px;">
+                        <p>${item.productName}</p>
+                        <p>${item.productPrice}</p>
+                        <p>${item.productQuantity}</p>
+                    `;
+                    itemsElement.appendChild(itemElement);
+                });
+                orderElement.appendChild(itemsElement);
+                purchaseHistoryElement.appendChild(orderElement);
+            });
+        }
+
+        function toggleOrderDetails(header) {
+            const details = header.nextElementSibling;
+            details.classList.toggle('active');
+        }
+
+        function showLoginModal() {
+            const loginModal = document.getElementById('loginModal');
+            const loginModalContent = loginModal.querySelector('.login-modal-content');
+
+            loginModalContent.style.opacity = 0;
+            loginModalContent.style.transform = 'scale(0.5)';
+            loginModal.style.display = 'block';
+
+            setTimeout(() => {
+                loginModalContent.style.opacity = 1;
+                loginModalContent.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeLoginModal() {
+            const loginModalContent = document.getElementById('loginModal').querySelector('.login-modal-content');
+            loginModalContent.style.opacity = 0;
+            loginModalContent.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                document.getElementById('loginModal').style.display = 'none';
+            }, 500);
+        }
+
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                alert('Вход выполнен успешно!');
+                loggedInUser = user;
+                closeLoginModal();
+                document.getElementById('loginTab').style.display = 'none';
+                document.getElementById('registerTab').style.display = 'none';
+                document.getElementById('profileTab').style.display = 'inline-block';
+                document.getElementById('logoutTab').style.display = 'inline-block';
+            } else {
+                alert('Неверное имя пользователя или пароль!');
+            }
+        }
+
+        function showRegisterModal() {
+            const registerModal = document.getElementById('registerModal');
+            const registerModalContent = registerModal.querySelector('.register-modal-content');
+
+            registerModalContent.style.opacity = 0;
+            registerModalContent.style.transform = 'scale(0.5)';
+            registerModal.style.display = 'block';
+
+            setTimeout(() => {
+                registerModalContent.style.opacity = 1;
+                registerModalContent.style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function closeRegisterModal() {
+            const registerModalContent = document.getElementById('registerModal').querySelector('.register-modal-content');
+            registerModalContent.style.opacity = 0;
+            registerModalContent.style.transform = 'scale(0.5)';
+
+            setTimeout(() => {
+                document.getElementById('registerModal').style.display = 'none';
+            }, 500);
+        }
+
+        function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.some(u => u.username === username)) {
+                alert('Пользователь с таким именем уже существует!');
+                return;
+            }
+
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Регистрация успешна! Пожалуйста, войдите.');
+            closeRegisterModal();
+        }
+
+        function logout() {
+            loggedInUser = null;
+            alert('Вы вышли из системы.');
+            document.getElementById('loginTab').style.display = 'inline-block';
+            document.getElementById('registerTab').style.display = 'inline-block';
+            document.getElementById('profileTab').style.display = 'none';
+            document.getElementById('logoutTab').style.display = 'none';
         }
 
         // Анимация появления товаров
