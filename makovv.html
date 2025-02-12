@@ -759,7 +759,9 @@
 
         function placeOrder() {
             const cartItems = document.getElementById('cart-items').getElementsByClassName('cart-item');
-            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.username === loggedInUser.username);
+            const purchaseHistory = users[userIndex].purchaseHistory || [];
             const order = {
                 date: new Date().toLocaleString(),
                 items: []
@@ -774,7 +776,8 @@
             }
 
             purchaseHistory.push(order);
-            localStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+            users[userIndex].purchaseHistory = purchaseHistory;
+            localStorage.setItem('users', JSON.stringify(users));
 
             alert('Заказ успешно оформлен!');
             clearCart();
@@ -782,7 +785,9 @@
         }
 
         function loadPurchaseHistory() {
-            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.username === loggedInUser.username);
+            const purchaseHistory = users[userIndex].purchaseHistory || [];
             const purchaseHistoryElement = document.getElementById('purchase-history');
             purchaseHistoryElement.innerHTML = '';
 
@@ -888,7 +893,7 @@
                 return;
             }
 
-            users.push({ username, password });
+            users.push({ username, password, purchaseHistory: [] });
             localStorage.setItem('users', JSON.stringify(users));
             alert('Регистрация успешна! Пожалуйста, войдите.');
             closeRegisterModal();
